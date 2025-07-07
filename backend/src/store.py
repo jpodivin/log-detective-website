@@ -14,7 +14,16 @@ from src.schema import FeedbackSchema
 class Storator3000:
     def __init__(self, provider: ProvidersEnum, id_: str) -> None:
         self.provider = provider
-        self.id_ = id_
+        max_filename_length = os.pathconf("/", "PC_NAME_MAX")
+
+        # When log is submitted from a long URL (but theoretically from other
+        # source as well), the ID can be longer than 255 characters, which
+        # would be over the limit for Linux filenames. In such case, let's
+        # shorten it. We will lose the original URL but we won't fail.
+        if len(id_) >= max_filename_length:
+            id_ = id_[:7]
+        self.id_ = f"{id_}_{uuid.uuid4()}"
+
         self.store_to = Path(FEEDBACK_DIR) / str(datetime.now().date())
 
     @property
@@ -23,17 +32,7 @@ class Storator3000:
 
     @property
     def build_dir(self) -> Path:
-        max_filename_length = os.pathconf("/", "PC_NAME_MAX")
-
-        # When log is submitted from a long URL (but theoretically from other
-        # source as well), the ID can be longer than 255 characters, which
-        # would be over the limit for Linux filenames. In such case, let's
-        # shorten it. We will lose the original URL be we won't fail.
-        id_ = self.id_
-        if len(self.id_) >= max_filename_length:
-            id_ = self.id_[:7]
-
-        return self.target_dir / id_
+        return self.target_dir / self.id_
 
     def store(self, feedback_result: FeedbackSchema) -> uuid.UUID:
         self.build_dir.mkdir(parents=True, exist_ok=True)

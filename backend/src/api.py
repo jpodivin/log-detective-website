@@ -323,7 +323,9 @@ def contribute_upload_file(feedback_input: FeedbackInputSchema) -> OkResponse:
 
 @app.post("/frontend/contribute/url/{url}")
 def contribute_review_url(feedback_input: FeedbackInputSchema, url: str) -> OkResponse:
-    return _store_data_for_providers(feedback_input, ProvidersEnum.url, url)
+    """When storing results from URL we should only use small portion for id."""
+    upload_id = url[:7]
+    return _store_data_for_providers(feedback_input, ProvidersEnum.url, upload_id)
 
 
 @app.post("/frontend/contribute/container/{url}")
