@@ -16,4 +16,4 @@
  :dev-http {3000 "public"}
  :nrepl {:port 3333}
  :source-paths ["src"]
- :jvm-opts ["-XX:MaxHeapSize=255m" "-XX:MaxDirectMemorySize=512m"]}
+ :jvm-opts ["-XX:MaxHeapSize=255m" "-XX:MaxDirectMemorySize=512m" "-Djava.net.preferIPv4Stack=true"]}

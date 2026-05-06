@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora:42
+FROM registry.fedoraproject.org/fedora:43
 LABEL maintainer="copr-devel@lists.fedorahosted.org"
 
 RUN dnf -y update && \
